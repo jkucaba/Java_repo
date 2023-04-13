@@ -19,6 +19,7 @@ public class Main {
                 double s1 = (Stos[stosIndex]);  //liczba z góry stosu
                 int sI = stosIndex-1;
                 double z = Stos[sI];            //2 liczba licząc od góry stosu
+
                 if(x.get(i).equals("+")){
                     stosIndex--;                //zmniejszamy wierzchołek stosu o 1 i tam zapisujemy wynik operacji
                     Stos[stosIndex] = z+s1;
@@ -75,15 +76,21 @@ public class Main {
             }
             else{
                 // przypadek pierwszy (czytamy pierwszy operator) - wykonuje się raz
-                if (stackIndex == -2) {
+                if (stackIndex == -2 && (args[j].charAt(0) != '(')) {
                     stackIndex += 2;
                     Stack[stackIndex] = String.valueOf(args[j].charAt(i));
                 }
                 // kolejno ustalamy czy pojawienie się operatora zdejmuje znajdujące się na stosie operatory
                 else {
                     if(args[j].charAt(i)=='('){
-                        stackIndex++;
-                        Stack[stackIndex] = String.valueOf(args[j].charAt(i));
+                        if(stackIndex == -2){
+                            stackIndex += 2;
+                            Stack[stackIndex] = String.valueOf(args[j].charAt(i));
+                        }
+                        else {
+                            stackIndex++;
+                            Stack[stackIndex] = String.valueOf(args[j].charAt(i));
+                        }
                     }
                     // operator '+' zdejmuje operatory o takim samym lub wyższym priorytecie itd.
                     if(args[j].charAt(i)=='+'){
@@ -102,7 +109,7 @@ public class Main {
                     }
                     if(args[j].charAt(i)=='-'){
                         if(Stack[stackIndex].equals("-") || Stack[stackIndex].equals("+") || Stack[stackIndex].equals("*")||Stack[stackIndex].equals("/") || Stack[stackIndex].equals("^")){
-                            while((Stack[stackIndex].equals("-") || Stack[stackIndex].equals("+") || Stack[stackIndex].equals("*")||Stack[stackIndex].equals("/")||Stack[stackIndex].equals("^"))&&stackIndex>0) {
+                            while((Stack[stackIndex].equals("-") || Stack[stackIndex].equals("+") || Stack[stackIndex].equals("*")||Stack[stackIndex].equals("/")||Stack[stackIndex].equals("^"))&& stackIndex > 0) {
                                 wynik.add(Stack[stackIndex]);
                                 stackIndex--;
                             }
@@ -115,8 +122,8 @@ public class Main {
                         }
                     }
                     if(args[j].charAt(i)=='*'){
-                        if(Stack[stackIndex].equals("/") || Stack[stackIndex].equals("*") ||Stack[stackIndex].equals("^") ){
-                            while((Stack[stackIndex].equals("*")||Stack[stackIndex].equals("/")||Stack[stackIndex].equals("^")) &&stackIndex>0) {
+                        if(Stack[stackIndex].equals("*") || Stack[stackIndex].equals("/") || Stack[stackIndex].equals("^") ){
+                            while((Stack[stackIndex].equals("*")||Stack[stackIndex].equals("/")||Stack[stackIndex].equals("^")) && stackIndex > 0) {
                                 wynik.add(Stack[stackIndex]);
                                 stackIndex--;
                             }
@@ -130,7 +137,7 @@ public class Main {
                     }
                     if(args[j].charAt(i)=='/'){
                         if(Stack[stackIndex].equals("*")|| Stack[stackIndex].equals("/") ||Stack[stackIndex].equals("^")){
-                            while((Stack[stackIndex].equals("*")||Stack[stackIndex].equals("/")||Stack[stackIndex].equals("^"))&&stackIndex>0) {
+                            while((Stack[stackIndex].equals("*")||Stack[stackIndex].equals("/")||Stack[stackIndex].equals("^")) && stackIndex > 0) {
                                 wynik.add(Stack[stackIndex]);
                                 stackIndex--;
                             }
@@ -157,14 +164,17 @@ public class Main {
                             wynik.add(Stack[stackIndex]);
                             stackIndex--;
                         }
-                        stackIndex--;
+
                     }
                 }
             }
         }
         //w tej pętli dodajemy operatory które zostały na stosie
         for(int i=stackIndex; i>=0; i--){
-            wynik.add(Stack[i]);
+            if(!Stack[i].equals("(")) {
+                wynik.add(Stack[i]);
+            }
+
         }
         //wypisanie ostatecznych wyników
         System.out.println("\nPostac normalna: " + args[j]);
